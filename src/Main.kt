@@ -8,7 +8,7 @@ private fun menu() {
     do {
 
 
-        println("---Menu----")
+        println("---Menu---")
         println("1- Cadastrar")
         println("2- Listar")
         println("3- Editar")
