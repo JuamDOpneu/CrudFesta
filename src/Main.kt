@@ -1,4 +1,6 @@
-var convidado: Convidado = Convidado()
+
+//Variavel Global
+var listaDeConvidados: MutableList<Convidado> = mutableListOf<Convidado>()
 
 fun main() {
     menu()
@@ -6,77 +8,131 @@ fun main() {
 
 private fun menu() {
     do {
+        println("\n1- CRIAR")
+        println("2- LISTAR")
+        println("3- EDITAR")
+        println("4- EXCLUIR")
+        println("5 - BUSCAR")
+        println("0- SAIR")
+        val op = readln()//VALIDAR!
 
-
-        println("---Menu----")
-        println("1- Cadastrar")
-        println("2- Listar")
-        println("3- Editar")
-        println("4- Excluindo")
-        println("0- Sair")
-
-        val opcao = readln().toInt()//validade
-        when (opcao) {
-            1 -> {
-                println("Cadastrado...")
-                convidado = cadastrar()
-            }
-
-            2 -> {
-                println("Listado...")
-                listar(convidado)
-            }
-
-            3 -> println("Editando...")
-            4 -> println("Excluindo...")
-            0 -> println("Saindo...")
+        when (op.toInt()) {//Opções do menu
+            1 -> criar()
+            2 -> listar()
+            3 -> editar()
+            4 -> excluir()
+            5 -> buscar()
+            0 -> print("Saindo...")
         }
-    } while (true)
+    } while (op.toInt() != 0)
 }
 
-private fun cadastrar(): Convidado {
-    //instacia
+private fun criar() {
+    println("CRIAR")
+    print("Nome do convidado: ")
+    val nome = readln()
 
+    print("Qual o seu presente: ")
+    val presente = readln()
 
-    print("qual seu Nome?")
-    //val nome = readln()
-    convidado.nome = readln()
+    print("Alguma restrição alimentar? ")
+    val alimentar = readln()
 
-    print("Qual vai ser o Presente?")
-    //val presente = readln()
-    convidado.presente = readln()
+    print("Sexo: M ou F: ")
+    val regex = Regex("^[MF]$")
+    val sexo = readln().uppercase()
+    //fazer um loop caso a opção seja inválida
+    if(regex.matches(sexo)){
+        when (sexo) {
+            "M" -> {
+                var homem = Homem()
+                homem.nome = nome
+                homem.restricao = alimentar
+                homem.vestuario = presente
 
-    print("Qual sua restriçao Alimentar?")
-    //val alimento = readln()
-    convidado.alimentar = readln()
+                listaDeConvidados.add(homem)
+            }
 
-    return convidado
-}
+            "F" -> {
+                var mulher = Mulher()
+                mulher.nome = nome
+                mulher.restricao = alimentar
+                mulher.brinquedo = presente
 
-private fun listar(convidado: Convidado) {
-    print(
-        "Nome: ${convidado.nome};\n Presente: " +
-                "${convidado.presente};\n" +
-                "Restricao ${convidado.alimentar};\n " +
-                "Vai ir a Festa? ${convidado.precenca}"
-    )
-
-}
-
-private fun editar() {
-    println("o convidado vai? S/N")
-    val resposta = readln()
-    when (resposta) {
-        "S" -> convidado.precenca = true
-        "N" -> convidado.precenca = false
+                listaDeConvidados.add(mulher)
+            }
+        }
+    } else {
+        println("opção inválida")
     }
 
 }
 
-private fun excluir() {
-    convidado.nome = ""
-    convidado.alimentar = ""
-    convidado.presente = ""
-    convidado.precenca = false
-    println("Convidado Excluido")
+private fun listar(){
+    var i = 0//para pode usar o indice no FOREACH
+    listaDeConvidados.forEach { convidado ->//a setinha se chama LAMBDA
+        println("Posição: ${i++}, " +
+                "Nome: ${convidado.nome}, " +
+                "Restrição Alimentar: ${convidado.restricao}, " +
+                "Presença: ${convidado.presenca}")
+        //Como fazer para mostrar o presente?
+        //Exercicio: Listar o brinquedo e o vestuário
+    }
+}
+//QUESTAO 2 - Validar para que a posiçao seja sempre numerica e a variavel resposta sempre seja "s" ou "n"
+private fun editar(){
+    if(validar()){
+        listar()
+        println("Qual posição deseja alterar a presença: ")
+        val posicao = readln().toInt()
+        val regex = Regex("^[sn]$")
+        //fazer um loop caso a opção seja inválida
+        println("Essa pessoa vai ou não na festa? (S/N)")
+        val resposta = readln().lowercase()
+        if (regex.matches(resposta)) {
+            when (resposta) {
+                "s" -> { listaDeConvidados[posicao].presenca = true }
+
+                "n" -> { listaDeConvidados[posicao].presenca = false }
+            }
+        } else {
+            println("Opção inválida")
+        }
+    }
+}
+//Questao 3 - validar para que a variavel posiçao seja sempre numerica
+private fun excluir(){
+    if(validar()) {
+        listar()
+        println("Qual posição deseja remover o convidado: ")
+        val regex = Regex("\\d")
+        val posicao = readln()
+        if(regex.matches(posicao)){
+            listaDeConvidados.removeAt(posicao.toInt())
+        }
+    }
+}
+//Questao 4 - validar para que a variavel busca seja sempre  alfabetica, ignora letras maiusculas e minusculas
+private fun validar(): Boolean{
+    if(listaDeConvidados.isEmpty()){
+        println("Sem convidados!")
+        return false
+    }
+    return true
+}
+
+private fun buscar(){
+    listar()
+    if(validar()){
+        println("Por quem você deseja buscar: ")
+        val busca = readln().toRegex(RegexOption.IGNORE_CASE)
+        var i = 0
+
+        listaDeConvidados.forEach { convidado ->
+            if(convidado.nome.contains(busca)){
+                println("Nome: ${convidado.nome}, Posição: $i")
+            }
+            i++
+        }
+    }
 }
