@@ -130,7 +130,7 @@ private fun buscar(){
 
         listaDeConvidados.forEach { convidado ->
             if(convidado.nome.contains(busca)){
-                println("Nome: ${convidado.nome}, Posição: $i")
+                println("Nome: ${convidado.nome}, Posiçã0: $i")
             }
             i++
         }
