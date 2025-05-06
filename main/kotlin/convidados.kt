@@ -1,4 +1,4 @@
-open class Convidado () {//SUPERCLASSE
+open class convidados () {//SUPERCLASSE
 //var presente: String = ""
 var restricao: String = ""
     var nome: String = ""

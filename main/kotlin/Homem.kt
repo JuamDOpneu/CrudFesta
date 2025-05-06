@@ -1,3 +1,3 @@
-class Homem : Convidado() {//SUBCLASSE
+class Homem : convidados() {//SUBCLASSE
 var vestuario: String = ""
 }
